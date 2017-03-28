@@ -1,8 +1,6 @@
 import { expect } from 'chai';
 import { combineFilters } from '../src/index';
 
-runTestCombineFilters();
-
 function runTestCombineFilters() {
   describe('Combine Filters', () => {
     const sample = {
@@ -31,6 +29,8 @@ function runTestCombineFilters() {
     }
 
     function checkIfCalled(action) {
+      /* TODO TOFIX WARNING please fix this */
+      // eslint-disable-next-line no-param-reassign
       action.hasBeenCalled = true;
       return true;
     }
@@ -62,7 +62,7 @@ function runTestCombineFilters() {
     });
 
     it('should not call remaining filters if one already returned false', () => {
-      let act = { hasBeenCalled: false };
+      const act = { hasBeenCalled: false };
       const combined = combineFilters(checkStateNot1, checkStateNot2, checkIfCalled);
 
       combined(act, 2);
@@ -72,3 +72,5 @@ function runTestCombineFilters() {
     });
   });
 }
+
+runTestCombineFilters();

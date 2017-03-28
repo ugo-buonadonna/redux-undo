@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { createStore } from 'redux';
+import _ from 'lodash';
 import undoable, {
   ActionCreators,
   ActionTypes,
@@ -7,7 +8,6 @@ import undoable, {
   includeAction,
   isHistory
 } from '../src/index';
-import _ from 'lodash';
 
 const decrementActions = ['DECREMENT'];
 const historyFields = ['_latestUnfiltered', 'past', 'future'];
@@ -60,7 +60,8 @@ function runTests(label, { undoableConfig = {}, initialStoreState, testConfig } 
 
     describe('Initial state', () => {
       it(
-        'should be initialized with the value of the default `initialState` of the reducer if there is no `initialState` set on the store',
+        `should be initialized with the value of the default 'initialState' of the reducer if there is no
+         'initialState' set on the store`,
         () => {
           if (initialStoreState === undefined) {
             expect(_.omit(mockInitialState, historyFields)).to.eql(countReducer());
@@ -101,8 +102,8 @@ function runTests(label, { undoableConfig = {}, initialStoreState, testConfig } 
         }
       };
       it('should preserve state when reducers are replaced', () => {
-        undoableConfig.debug = true;
-        store.replaceReducer(undoable(tenfoldReducer, undoableConfig));
+        const newundoableConfig = { ...undoableConfig, debug: true };
+        store.replaceReducer(undoable(tenfoldReducer, newundoableConfig));
         console.log('getstate', store.getState(), 'mockInitialState', mockInitialState);
         expect(store.getState()).to.deep.equal(mockInitialState);
 
@@ -177,12 +178,12 @@ function runTests(label, { undoableConfig = {}, initialStoreState, testConfig } 
       });
 
       it('should not record non state changing actions', () => {
-        let dummyState = mockUndoableReducer(incrementedState, { type: 'DUMMY' });
+        const dummyState = mockUndoableReducer(incrementedState, { type: 'DUMMY' });
         expect(dummyState).to.deep.equal(incrementedState);
       });
 
       it('should not record undefined actions', () => {
-        let dummyState = mockUndoableReducer(incrementedState, undefined);
+        const dummyState = mockUndoableReducer(incrementedState, undefined);
         expect(dummyState).to.deep.equal(incrementedState);
       });
 
@@ -190,7 +191,7 @@ function runTests(label, { undoableConfig = {}, initialStoreState, testConfig } 
         let reInitializedState;
         if (undoableConfig && undoableConfig.initTypes) {
           if (undoableConfig.initTypes.length > 0) {
-            let initType = Array.isArray(undoableConfig.initTypes)
+            const initType = Array.isArray(undoableConfig.initTypes)
               ? undoableConfig.initTypes[0]
               : undoableConfig.initTypes;
             reInitializedState = mockUndoableReducer(incrementedState, { type: initType });
@@ -209,7 +210,7 @@ function runTests(label, { undoableConfig = {}, initialStoreState, testConfig } 
       });
 
       it('should increment when action is dispatched to store', () => {
-        let expectedResult = store.getState().value + 1;
+        const expectedResult = store.getState().value + 1;
         store.dispatch({ type: 'INCREMENT' });
         expect(_.omit(store.getState(), historyFields).value).to.eql(expectedResult);
       });
@@ -259,7 +260,7 @@ function runTests(label, { undoableConfig = {}, initialStoreState, testConfig } 
       });
 
       it("should do nothing if 'past' is empty", () => {
-        let undoInitialState = mockUndoableReducer(mockInitialState, ActionCreators.undo());
+        const undoInitialState = mockUndoableReducer(mockInitialState, ActionCreators.undo());
         if (!mockInitialState.past.length) {
           expect(undoInitialState).to.deep.equal(mockInitialState);
         }
@@ -331,7 +332,7 @@ function runTests(label, { undoableConfig = {}, initialStoreState, testConfig } 
       });
 
       it("should do nothing if 'future' is empty", () => {
-        let secondRedoState = mockUndoableReducer(redoState, ActionCreators.redo());
+        const secondRedoState = mockUndoableReducer(redoState, ActionCreators.redo());
         if (!redoState.future.length) {
           expect(secondRedoState.present).to.deep.equal(redoState.present);
         }
@@ -370,7 +371,7 @@ function runTests(label, { undoableConfig = {}, initialStoreState, testConfig } 
       });
 
       it('should do nothing if past index is out of bounds', () => {
-        let jumpToOutOfBounds = mockUndoableReducer(
+        const jumpToOutOfBounds = mockUndoableReducer(
           incrementedState,
           ActionCreators.jumpToPast(-1)
         );
@@ -412,7 +413,7 @@ function runTests(label, { undoableConfig = {}, initialStoreState, testConfig } 
       });
 
       it('should do nothing if future index is out of bounds', () => {
-        let jumpToOutOfBounds = mockUndoableReducer(
+        const jumpToOutOfBounds = mockUndoableReducer(
           mockInitialState,
           ActionCreators.jumpToFuture(-1)
         );
@@ -448,7 +449,7 @@ function runTests(label, { undoableConfig = {}, initialStoreState, testConfig } 
       let doubleUndoState;
       let doubleRedoState;
       before('perform a jump action', () => {
-        let doubleIncrementedState = mockUndoableReducer(incrementedState, { type: 'INCREMENT' });
+        const doubleIncrementedState = mockUndoableReducer(incrementedState, { type: 'INCREMENT' });
         jumpToPastState = mockUndoableReducer(
           doubleIncrementedState,
           ActionCreators.jump(jumpStepsToPast)
@@ -476,7 +477,7 @@ function runTests(label, { undoableConfig = {}, initialStoreState, testConfig } 
       });
 
       it('should do nothing if steps is 0', () => {
-        let jumpToCurrentState = mockUndoableReducer(mockInitialState, ActionCreators.jump(0));
+        const jumpToCurrentState = mockUndoableReducer(mockInitialState, ActionCreators.jump(0));
         expect(jumpToCurrentState).to.deep.equal(mockInitialState);
       });
 
@@ -675,7 +676,7 @@ runTests('Erroneous configuration', {
   },
   initialStoreState: {
     past: [5, {}, 3, null, 1],
-    value: Math.pow(2, 32),
+    value: 2 ** 32,
     future: []
   },
   testConfig: {

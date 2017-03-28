@@ -1,7 +1,5 @@
 # redux undo/redo
 
-[![NPM version (>=0.4)](https://img.shields.io/npm/v/redux-undo.svg?style=flat-square)](https://www.npmjs.com/package/redux-undo) [![NPM Downloads](https://img.shields.io/npm/dm/redux-undo.svg?style=flat-square)](https://www.npmjs.com/package/redux-undo) [![Coverage Status](https://img.shields.io/coveralls/omnidan/redux-undo.svg?style=flat-square)](https://coveralls.io/r/omnidan/redux-undo) [![Dependencies](https://img.shields.io/david/omnidan/redux-undo.svg?style=flat-square)](https://david-dm.org/omnidan/redux-undo) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](http://standardjs.com/) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/omnidan/redux-undo/master/LICENSE.md)
-
 _simple undo/redo functionality for redux state containers_
 
 [![https://i.imgur.com/M2KR4uo.gif](https://i.imgur.com/M2KR4uo.gif)](https://github.com/omnidan/redux-undo-boilerplate)
@@ -100,7 +98,7 @@ Wrapping your reducer with `undoable` makes the state look like this:
 ```js
 {
   past: [...pastStatesHere...],
-  present: {...currentStateHere...},
+  ...currentStateHere,
   future: [...futureStatesHere...]
 }
 ```
@@ -179,9 +177,9 @@ You can use your redux store to set an initial history for your undoable reducer
 import { createStore } from 'redux';
 
 const initialHistory = {
-  past: [0, 1, 2, 3],
-  present: 4,
-  future: [5, 6, 7]
+  past: [{value: 2},{value: 3}],
+  {value: 4},
+  future: [{value: 5},{value: 6}]
 }
 
 const store = createStore(undoable(counter), initialHistory);
@@ -199,7 +197,7 @@ const store = createStore(undoable(counter), {foo: 'bar'});
 // will make the state look like this:
 {
   past: [],
-  present: {foo: 'bar'},
+  foo: 'bar',
   future: []
 }
 
@@ -228,10 +226,6 @@ undoable(reducer, { filter: excludeAction(SOME_ACTION) })
 undoable(reducer, { filter: includeAction([SOME_ACTION, SOME_OTHER_ACTION]) })
 undoable(reducer, { filter: excludeAction([SOME_ACTION, SOME_OTHER_ACTION]) })
 ```
-
-**Note:** Since [`beta4`](https://github.com/omnidan/redux-undo/releases/tag/beta4),
-          only actions resulting in a new state are recorded. This means the
-          (now deprecated) `distinctState()` filter is auto-applied.
 
 #### Custom filters
 
@@ -307,11 +301,6 @@ ignoreActions(
 ## What is this magic? How does it work?
 
 Have a read of the [Implementing Undo History recipe](http://redux.js.org/docs/recipes/ImplementingUndoHistory.html) in the Redux documents, which explains in detail how redux-undo works.
-
-
-## Gitter Chat / Support
-
-If you have a question or just want to discuss something with other redux-undo users/maintainers, [chat with the community on gitter.im/omnidan/redux-undo](https://gitter.im/omnidan/redux-undo)
 
 ## License
 

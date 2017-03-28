@@ -166,22 +166,25 @@ export default function undoable(reducer, rawConfig = {}) {
       debug.log('history is uninitialized');
 
       if (state === undefined) {
-        history = config.history = createHistory(
+        config.history = createHistory(
           reducer(state, { type: '@@redux-undo/CREATE_HISTORY' }),
           config.ignoreInitialState,
           ...slices
         );
+        history = config.history;
         debug.log('do not initialize on probe actions');
       } else if (isHistory(state)) {
-        history = config.history = config.ignoreInitialState
+        config.history = config.ignoreInitialState
           ? state
           : {
             ...state,
             _latestUnfiltered: { ...history2state(state) }
           };
+        history = config.history;
         debug.log('initialHistory initialized: initialState is a history', config.history);
       } else {
-        history = config.history = createHistory(state);
+        config.history = createHistory(state);
+        history = config.history;
         debug.log('initialHistory initialized: initialState is not a history', config.history);
       }
     }
