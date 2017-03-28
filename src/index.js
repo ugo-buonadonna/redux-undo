@@ -1,8 +1,11 @@
-export { ActionTypes, ActionCreators } from './actions'
+export { ActionTypes, ActionCreators } from './actions';
 export {
-  parseActions, isHistory,
-  distinctState, includeAction, excludeAction,
+  parseActions,
+  isHistory,
+  distinctState,
+  includeAction,
+  excludeAction,
   combineFilters
-} from './helpers'
+} from './helpers';
 
-export { default } from './reducer'
+export { default } from './reducer';

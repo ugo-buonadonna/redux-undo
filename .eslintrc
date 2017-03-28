@@ -1,9 +1,33 @@
 {
-  "extends": "standard",
   "parser": "babel-eslint",
+  "extends": [
+    "airbnb"
+  ],
+  "rules": {
+    "camelcase": 0,
+    "no-confusing-arrow": 0,
+    "no-underscore-dangle": 0,
+    "no-unused-vars": 0,
+    "import/no-unresolved": 0,
+    "import/extensions": 0,
+    "import/no-extraneous-dependencies": 0,
+    "no-mixed-operators": 0,
+    "consistent-return": 0,
+    "comma-dangle": [
+      "error",
+      {
+        "arrays": "only-multiline",
+        "objects": "only-multiline",
+        "imports": "only-multiline",
+        "exports": "only-multiline",
+        "functions": "only-multiline"
+      }
+    ],
+    "import/prefer-default-export": 0
+  },
   "env": {
     "browser": true,
-    "mocha": true,
-    "node": true
+    "node": true,
+    "es6": true
   }
 }

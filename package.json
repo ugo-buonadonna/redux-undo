@@ -22,16 +22,11 @@
     "test:bail": "npm run test:watch -- --bail",
     "test:cov": "./node_modules/.bin/babel-node ./node_modules/.bin/isparta cover --root src/ ./node_modules/.bin/_mocha",
     "test:coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
-    "test:watch": "npm run test -- --watch",
-    "docs:clean": "rimraf _book",
-    "docs:prepare": "gitbook install",
-    "docs:build": "npm run docs:prepare && gitbook build -g omnidan/redux-undo",
-    "docs:watch": "npm run docs:prepare && gitbook serve",
-    "docs:publish": "npm run docs:clean && npm run docs:build && cp CNAME _book && cd _book && git init && git commit --allow-empty -m 'update book' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'update book' && git push git@github.com:omnidan/redux-undo gh-pages --force"
+    "test:watch": "npm run test -- --watch"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/omnidan/redux-undo.git"
+    "url": "https://github.com/ugo-buonadonna/redux-undo.git"
   },
   "keywords": [
     "redux",
@@ -40,12 +35,12 @@
     "flux",
     "time travel"
   ],
-  "author": "Daniel Bugl <me@omnidan.net> (https://github.com/omnidan)",
+  "author": "Ugo Buonadonna <ugo.buonadonna@gmail.com> (https://github.com/ugo-buonadonna)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/omnidan/redux-undo/issues"
+    "url": "https://github.com/ugo-buonadonna/redux-undo/issues"
   },
-  "homepage": "https://github.com/omnidan/redux-undo",
+  "homepage": "https://github.com/ugo-buonadonna/redux-undo",
   "devDependencies": {
     "babel-cli": "^6.11.4",
     "babel-core": "^6.11.4",
@@ -56,13 +51,18 @@
     "chai": "^3.5.0",
     "coveralls": "^2.11.12",
     "cross-env": "^2.0.0",
-    "eslint": "^3.1.1",
+    "eslint": "^3.18.0",
+    "eslint-config-airbnb": "^14.1.0",
     "eslint-config-standard": "^5.3.5",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-promise": "^2.0.0",
+    "eslint-plugin-react": "^6.10.3",
     "eslint-plugin-standard": "^2.0.0",
     "expect": "^1.20.2",
     "gitbook-cli": "^2.3.0",
     "isparta": "^4.0.0",
+    "lodash": "^4.17.4",
     "mocha": "^3.0.2",
     "mocha-lcov-reporter": "^1.2.0",
     "npm-run-all": "^3.1.1",
