@@ -163,7 +163,7 @@ export default function undoable(reducer, rawConfig = {}) {
 
     let history = state;
     if (!config.history) {
-      console.log('history is uninitialized');
+      debug.log('history is uninitialized');
 
       if (state === undefined) {
         history = config.history = createHistory(
@@ -171,7 +171,7 @@ export default function undoable(reducer, rawConfig = {}) {
           config.ignoreInitialState,
           ...slices
         );
-        console.log('do not initialize on probe actions');
+        debug.log('do not initialize on probe actions');
       } else if (isHistory(state)) {
         history = config.history = config.ignoreInitialState
           ? state
@@ -179,10 +179,10 @@ export default function undoable(reducer, rawConfig = {}) {
             ...state,
             _latestUnfiltered: { ...history2state(state) }
           };
-        console.log('initialHistory initialized: initialState is a history', config.history);
+        debug.log('initialHistory initialized: initialState is a history', config.history);
       } else {
         history = config.history = createHistory(state);
-        console.log('initialHistory initialized: initialState is not a history', config.history);
+        debug.log('initialHistory initialized: initialState is not a history', config.history);
       }
     }
 
@@ -245,7 +245,7 @@ export default function undoable(reducer, rawConfig = {}) {
 
         if (history === res) {
           // Don't handle this action. Do not call debug.end here,
-          // because this action should not produce side effects to the console
+          // because this action should not produce side effects to the debug
           return history;
         }
 
