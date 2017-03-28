@@ -68,10 +68,12 @@ function runTests(label, { undoableConfig = {}, initialStoreState, testConfig } 
         }
       );
 
-      it.only("should be initialized with the the store's initial `history` if provided", () => {
+      it("should be initialized with the the store's initial `history` if provided", () => {
         if (initialStoreState !== undefined && isHistory(initialStoreState)) {
-          console.log('dri', initialStoreState, 'aio', mockInitialState);
-          expect(initialStoreState).to.deep.eql(mockInitialState);
+          const filterField = ['_latestUnfiltered'];
+          expect(_.omit(initialStoreState, filterField)).to.deep.eql(
+            _.omit(mockInitialState, filterField)
+          );
         }
       });
 
@@ -101,6 +103,7 @@ function runTests(label, { undoableConfig = {}, initialStoreState, testConfig } 
       it('should preserve state when reducers are replaced', () => {
         undoableConfig.debug = true;
         store.replaceReducer(undoable(tenfoldReducer, undoableConfig));
+        console.log('getstate', store.getState(), 'mockInitialState', mockInitialState);
         expect(store.getState()).to.deep.equal(mockInitialState);
 
         // swap back for other tests
@@ -144,10 +147,9 @@ function runTests(label, { undoableConfig = {}, initialStoreState, testConfig } 
           // (Below, move forward by two filtered actions)
           expected = {
             ...expected,
-            present: notFilteredReducer(
-              notFilteredReducer(expected, excludedAction),
-              excludedAction
-            ).present
+            ...history2state(
+              notFilteredReducer(notFilteredReducer(expected, excludedAction), excludedAction)
+            )
           };
           actual = mockUndoableReducer(mockUndoableReducer(actual, excludedAction), excludedAction);
           expect(actual).to.deep.equal(expected);
@@ -276,7 +278,9 @@ function runTests(label, { undoableConfig = {}, initialStoreState, testConfig } 
           // undo
           state = mockUndoableReducer(preUndoState, ActionCreators.undo());
           // should undo to (not filtered) initial present
-          expect(state.present).to.deep.equal(preUndoState.past[preUndoState.past.length - 1]);
+          expect(history2state(state)).to.deep.equal(
+            preUndoState.past[preUndoState.past.length - 1]
+          );
         }
       });
     });
@@ -403,7 +407,7 @@ function runTests(label, { undoableConfig = {}, initialStoreState, testConfig } 
       it('should change present to a given value from future', () => {
         const futureState = mockInitialState.future[jumpToFutureIndex];
         if (futureState !== undefined) {
-          expect(jumpToFutureState.present).to.equal(futureState);
+          expect(history2state(jumpToFutureState)).to.eql(futureState);
         }
       });
 
@@ -580,8 +584,8 @@ function runTests(label, { undoableConfig = {}, initialStoreState, testConfig } 
   });
 }
 
-// runTests('Default config');
-/*
+runTests('Default config');
+
 runTests('Never skip reducer', {
   undoableConfig: {
     neverSkipReducer: true
@@ -596,7 +600,6 @@ runTests('No Init types', {
   }
 });
 
-
 runTests('Initial State equals 100', {
   undoableConfig: {
     limit: 200
@@ -607,7 +610,6 @@ runTests('Initial State equals 100', {
   }
 });
 
-
 runTests('Initial State that looks like a history', {
   undoableConfig: {},
   initialStoreState: { present: { value: 0 } },
@@ -615,7 +617,6 @@ runTests('Initial State that looks like a history', {
     checkSlices: true
   }
 });
-
 
 runTests('Filter (Include Actions)', {
   undoableConfig: {
@@ -625,7 +626,6 @@ runTests('Filter (Include Actions)', {
     includeActions: decrementActions
   }
 });
-*/
 
 runTests('Initial History and Filter (Exclude Actions)', {
   undoableConfig: {
@@ -643,21 +643,22 @@ runTests('Initial History and Filter (Exclude Actions)', {
     checkSlices: true
   }
 });
-/*
+
 runTests('Initial State and Init types', {
   undoableConfig: {
     limit: 1024,
     initTypes: 'RE-INITIALIZE'
   },
   initialStoreState: {
-    past: [123],
-    present: 5,
-    future: [-1, -2, -3]
+    past: [{ value: 123 }],
+    value: 5,
+    future: [{ value: -1 }, { value: -2 }, { value: -3 }]
   },
   testConfig: {
     checkSlices: true
   }
-})
+});
+
 runTests('Array as clearHistoryType', {
   undoableConfig: {
     clearHistoryType: ['TYPE_1', 'TYPE_2']
@@ -665,7 +666,8 @@ runTests('Array as clearHistoryType', {
   testConfig: {
     checkSlices: true
   }
-})
+});
+
 runTests('Erroneous configuration', {
   undoableConfig: {
     limit: -1,
@@ -673,17 +675,16 @@ runTests('Erroneous configuration', {
   },
   initialStoreState: {
     past: [5, {}, 3, null, 1],
-    present: Math.pow(2, 32),
+    value: Math.pow(2, 32),
     future: []
   },
   testConfig: {
     checkSlices: true
   }
-})
+});
+
 runTests('Get Slices', {
   testConfig: {
     checkSlices: true
   }
-})
-
-*/
+});
