@@ -1,33 +1,36 @@
 # redux undo/redo
 
-_simple undo/redo functionality for redux state containers_
+_simple undo/redo functionality for redux state containers, augmenting existing store structure_
 
-[![https://i.imgur.com/M2KR4uo.gif](https://i.imgur.com/M2KR4uo.gif)](https://github.com/omnidan/redux-undo-boilerplate)
-
-**Protip:** Check out the [todos-with-undo example](https://github.com/omnidan/redux-undo/tree/master/examples/todos-with-undo) or the [redux-undo-boilerplate](https://github.com/omnidan/redux-undo-boilerplate) to quickly get started with `redux-undo`.
-
-**Switching from 0.x to 1.0 (beta):** Make sure to update your programs to the [latest History API](#history-api).
+[![https://i.imgur.com/M2KR4uo.gif](https://i.imgur.com/M2KR4uo.gif)](https://github.com/omnidan/redux-existing-undo-boilerplate)
 
 ---
 
-**This README is about the new 1.0-beta branch of redux-undo, if you are using
-or plan on using 0.6, check out [the `0.6` branch](https://github.com/omnidan/redux-undo/tree/0.6)**
+# WARNING
+ 
+ ## In order fot this to work, the reducer's slice has to be an object, and not a single value
+ ```diff
+ const appReducer = combineReducers({
+  todos: todos.reducers
+ )}
+- var todosInitialState = 3
++ var todosInitialState = { value : 3 }
+```
+
 
 ---
-
-## Note on 1.0.0-beta7
 
 If you use Redux Undo in CommonJS environment, **don’t forget to add `.default` to your import**.
 
 ```diff
-- var ReduxUndo = require('redux-undo')
-+ var ReduxUndo = require('redux-undo').default
+- var ReduxUndo = require('redux-existing-undo')
++ var ReduxUndo = require('redux-existing-undo').default
 ```
 
 If your environment support es modules just go by:
 
 ```js
-import ReduxUndo from 'redux-undo';
+import ReduxUndo from 'redux-existing-undo';
 ```
 
 We are also supporting UMD build:
@@ -41,14 +44,14 @@ var ReduxUndo = window.ReduxUndo.default;
 ## Installation
 
 ```
-npm install --save redux-undo@beta
+npm install --save redux-existing-undo
 ```
 
 
 ## API
 
 ```js
-import undoable from 'redux-undo';
+import undoable from 'redux-existing-undo';
 undoable(reducer)
 undoable(reducer, config)
 ```
@@ -56,20 +59,17 @@ undoable(reducer, config)
 
 ## Making your reducers undoable
 
-`redux-undo` is a reducer enhancer (higher-order reducer), it provides the `undoable` function, which
+`redux-existing-undo` is a reducer enhancer (higher-order reducer), it provides the `undoable` function, which
 takes an existing reducer and a configuration object and enhances your existing
 reducer with undo functionality.
 
-**Note:** If you were accessing `state.counter` before, you have to access
-`state.counter.present` after wrapping your reducer with `undoable`.
-
-To install, firstly import `redux-undo`:
+To install, firstly import `redux-existing-undo`:
 
 ```js
 // Redux utility functions
 import { combineReducers } from 'redux';
-// redux-undo higher-order reducer
-import undoable from 'redux-undo';
+// redux-existing-undo higher-order reducer
+import undoable from 'redux-existing-undo';
 ```
 
 Then, add `undoable` to your reducer(s) like this:
@@ -103,7 +103,7 @@ Wrapping your reducer with `undoable` makes the state look like this:
 }
 ```
 
-Now you can get your current state like this: `state.present`
+Now you can get your current state like you already did.
 
 And you can access all past states (e.g. to show a history) like this: `state.past`
 
@@ -113,7 +113,7 @@ And you can access all past states (e.g. to show a history) like this: `state.pa
 Firstly, import the undo/redo action creators:
 
 ```js
-import { ActionCreators } from 'redux-undo';
+import { ActionCreators } from 'redux-existing-undo';
 ```
 
 Then, you can use `store.dispatch()` and the undo/redo action creators to
@@ -156,7 +156,7 @@ undoable(reducer, {
   // you can also pass an array of strings to define several action types that would clear the history
   // beware: those actions will not be passed down to the wrapped reducers
 
-  initTypes: ['@@redux-undo/INIT'] // history will be (re)set upon init action type
+  initTypes: ['@@redux-existing-undo/INIT'] // history will be (re)set upon init action type
   // beware: those actions will not be passed down to the wrapped reducers
 
   debug: false, // set to `true` to turn on debugging
@@ -166,7 +166,7 @@ undoable(reducer, {
 ```
 
 **Note:** If you want to use just the `initTypes` functionality, but not import
-the whole redux-undo library, use [redux-recycle](https://github.com/omnidan/redux-recycle)!
+the whole redux-existing-undo library, use [redux-recycle](https://github.com/omnidan/redux-recycle)!
 
 #### Initial State and History
 
@@ -186,7 +186,7 @@ const store = createStore(undoable(counter), initialHistory);
 
 ```
 
-Or just set the current state like you're used to with Redux. Redux-undo will create the history for you:
+Or just set the current state like you're used to with Redux. redux-existing-undo will create the history for you:
 
 ```js
 
@@ -206,13 +206,13 @@ const store = createStore(undoable(counter), {foo: 'bar'});
 ### Filtering Actions
 
 If you don't want to include every action in the undo/redo history, you can
-add a `filter` function to `undoable`. `redux-undo` provides you with the
+add a `filter` function to `undoable`. `redux-existing-undo` provides you with the
 `includeAction` and `excludeAction` helpers for basic filtering.
 
 They should be imported like this:
 
 ```js
-import undoable, { includeAction, excludeAction } from 'redux-undo';
+import undoable, { includeAction, excludeAction } from 'redux-existing-undo';
 ```
 
 Now you can use the helper functions:
@@ -255,7 +255,7 @@ undoable(reducer, {
 You can also use our helper to combine filters.
 
 ```js
-import undoable, {combineFilters} from 'redux-undo'
+import undoable, {combineFilters} from 'redux-existing-undo'
 
 function isActionSelfExcluded(action) {
   return action.wouldLikeToBeInHistory
@@ -300,7 +300,7 @@ ignoreActions(
 
 ## What is this magic? How does it work?
 
-Have a read of the [Implementing Undo History recipe](http://redux.js.org/docs/recipes/ImplementingUndoHistory.html) in the Redux documents, which explains in detail how redux-undo works.
+Have a read of the [Implementing Undo History recipe](http://redux.js.org/docs/recipes/ImplementingUndoHistory.html) in the Redux documents, which explains in detail how redux-existing-undo works.
 
 ## License
 
